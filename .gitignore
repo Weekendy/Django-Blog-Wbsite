@@ -1,0 +1,7 @@
+ll_env/
+__pycachee__/
+*.sqlite3
+media/
+package.json
+package-lock.json
+node_modules/

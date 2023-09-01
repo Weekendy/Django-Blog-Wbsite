@@ -1,0 +1,29 @@
+{% extends "blogs/base.html" %}
+{% load bootstrap4 %}
+
+{% block page_header %}
+    <h2>编辑您的帖子~(￣▽￣)~*</h2>
+{% endblock page_header %}
+
+{% block content %}
+
+
+{% if user.id == post.owner.id %}
+    <h5><a href="{% url 'blogs:add_photo' post.id %}">编辑帖子的图片和标签←</a></h5>
+    <form action="{% url 'blogs:edit_blogpost' post.id %}" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+            <button name="submit" class="btn btn-primary">完成</button>
+        {% endbuttons %}
+
+        <input type="hidden" name="next" value="{% url 'blogs:blogposts' %}">
+    </form>
+
+    
+{% else %}
+    <p>你不能编辑别人的帖子(╯°□°）╯︵ ┻━┻</p>
+{% endif %}
+
+
+{% endblock content %}

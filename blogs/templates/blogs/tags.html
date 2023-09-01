@@ -1,0 +1,48 @@
+{% extends "blogs/base.html" %}
+
+{% block style %}
+<style>
+.tag {
+    display: inline;
+    margin-right: 5px;
+}
+
+.tag a {
+    color: #2c2c2c;
+}
+</style>
+{% endblock style %}
+
+{% block page_header %}
+<h1>帖子标签\^o^/</h1>
+{% endblock page_header %}
+
+{% block content %}
+
+
+{% if user.is_authenticated %}
+    <p><a href="{% url 'blogs:new_tag' %}">创建一个标签</a></p>
+{% else %}
+    <p>*您还未登录，故无法创建标签*</p>
+{% endif %}
+
+<ul class="tags">
+    {% for tag in tags %}
+        {% if tag.main %}
+        <li class="tag" style="font-size: {{ tag.size }}px; opacity: {{ tag.opacity }}%;">
+            <a href="{% url 'blogs:tag' tag.id %}">{{ tag.text }}</a>
+        </li>
+        {% endif %}
+    {% endfor %}
+
+    {% for tag in tags %}
+        {% if not tag.main %}
+        <li class="tag" style="font-size: {{ tag.size }}px; opacity: {{ tag.opacity }}%">
+            <a href="{% url 'blogs:tag' tag.id %}">{{ tag.text }}</a>
+        </li>
+        {% endif %}
+    {% endfor %}
+</ul>
+
+
+{% endblock content %}

@@ -1,0 +1,40 @@
+{% extends "blogs/base.html" %}
+{% load bootstrap4 %}
+
+{% block style %}
+<style>
+img {
+    width: 20%;
+}
+</style>
+{% endblock style %}
+
+
+{% block page_header %}
+<h1>The Image, Active. Punishiment!</h1>
+{% endblock page_header %}
+
+{% block content %}
+
+{% if media %}
+<form action="{% url 'checker:blogpost_photo' %}" method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% if media.image %}
+    <a href="{{ media.image.url }}"><img src="{{ media.image.url }}" alt="{{ media.image }}"></a>
+    {% else %}
+    <p>404</p>
+    {% endif %}
+
+    {% buttons %}
+    <button name="submit" class="btn btn-primary">上传</button>
+    {% endbuttons %}
+
+    <input type="hidden" name="next" value="{% url 'checker:blogpost_photo' %}">
+</form>
+{% else %}
+<b>Over.</b>
+{% endif %}
+
+
+{% endblock content %}

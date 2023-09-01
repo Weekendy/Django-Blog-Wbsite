@@ -1,0 +1,25 @@
+{% extends "blogs/base.html" %}
+
+{% block page_header %}
+
+
+<div class="jumbotron">
+    <h1 class="display-3">随遍写几句</h1>
+
+    <p class="lead">
+        *首先您需要<b>注册账号</b> <br />
+        点点<b>博客帖子</b>，即可查看目前为止发布过的帖子。<br />
+        再点点<b>新发表帖子</b>，即可发送新帖子。 <br />
+        点点自己帖子右边的<b>编辑帖子</b>，即可编辑自己的帖子
+    </p>
+
+    <a href="{% url 'users:register' %}" class="btn btn-lg btn-primary">
+        注册 &raquo;
+    </a>
+    <a href="{% url 'blogs:blogposts' %}" class="btn btn-lg btn-primary ml-3">
+        看看博客帖子&raquo;
+    </a>
+</div>
+
+
+{% endblock page_header %}

@@ -1,0 +1,140 @@
+.button {
+    color: #1f1e33;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.button:hover {
+    color: #126ccc;
+    text-decoration: none;
+}
+
+.delete-blogpost {
+    float: right;
+    margin-left: 8px;
+}
+
+.edit-blogpost {
+    float: right;
+    margin-left: 8px;
+}
+
+.like-blogpost {
+    float: right;
+}
+
+.blogpost-title {
+    text-align: center;
+    margin: 0;
+}
+
+.blogpost-date {
+    display: block;
+    text-align: center;
+}
+
+.blogpost-owner {
+    font-size: 18px;
+}
+
+.blogpost-text {
+    padding: 2px 16px;
+    font-size: 20px;
+    background-color: #fbfcfd;
+}
+
+.photo img {
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.tags {
+    height: 32px;
+    font-size: 16px;
+    line-height: 32px;
+}
+
+.tag {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.tag a {
+    height: 16px;
+    background-color: #c8c8d4;
+    border-radius: 5px;
+}
+
+.divice-block {
+    height: 8px;
+    background-color: #949494;
+}
+
+.comment, .inter-comment {
+    padding-top: 5px;
+}
+
+.comment .comment-owner-profile {
+    float: left;
+    width: 42px;
+    margin-right: 2px;
+    border-radius: 50%;
+    border: 1px solid #f1f3f4;
+}
+
+.comment .onwer {
+    float: left;
+    font-size: 18px;
+}
+
+.blogpost-comment {
+    position: relative;
+}
+
+.inter-comment {
+    position: relative;
+}
+
+.function-list {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.blogpost-comment .floor {
+    float: right;
+    margin-left: 10px;
+    line-height: 27px;
+}
+
+.comment .reply {
+    float: right;
+    font-size: 16px;
+    margin-left: 8px;
+}
+
+.comment .delete {
+    float: right;
+    margin-left: 8px;
+}
+
+.comment .like {
+    float: right;
+    line-height: 27px;
+}
+
+.comment .text {
+    font-size: 20px;
+    margin-top: 8px;
+    padding-left: 45px;
+}
+
+.cancel {
+    float: right;
+    cursor: pointer;
+}
+
+.inter-comment {
+    background-color: #e4e4ef;
+    padding-left: 32px;
+}

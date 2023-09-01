@@ -1,0 +1,63 @@
+{% extends 'blogs/base.html' %}
+{% load bootstrap4 %}
+
+{% block style %}
+<style>
+.tag-box {
+    height: 32px;
+    display: inline-block;
+}
+
+.unbind {
+    float: right;
+    height: auto;
+    cursor: pointer;
+}
+
+.tag {
+    height: 16px;
+    background-color: #c8c8d4;
+    border-radius: 10%;
+}
+</style>
+
+
+{% endblock style %}
+
+{% block page_header %}
+<h1>为帖子增加标签(p≧w≦q)</h1>
+{% endblock page_header %}
+
+{% block content %}
+
+
+{% for tag in tags %}
+    {% if tag.main %}
+    <div class="tag-box">
+        <a href="{% url 'blogs:unbind_tag' post.id tag.id %}" class="unbind">x</a>
+        <span class="tag"><a href="{% url 'blogs:tag' tag.id %}">{{ tag }}</a></span>
+    </div>
+    {% endif %}
+{% endfor %}
+
+{% for tag in tags %}
+    {% if not tag.main %}
+    <div class="tag-box">
+        <a href="{% url 'blogs:unbind_tag' post.id tag.id %}" class="unbind">x</a>
+        <span class="tag"><a href="{% url 'blogs:tag' tag.id %}">{{ tag }}</a></span>
+    </div>
+    {% endif %}
+{% endfor %}
+
+<form action="{% url 'blogs:add_tag' post.id %}" method="post" class="form">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+    {% buttons %}
+    <button name="submit" class="btn btn-primary">添加</button>
+    <a href="{% url 'blogs:blogpost' post.id %}" class="btn btn-primary">完成</a>
+    {% endbuttons %}
+    <input type="hidden" name="next" value="{% url 'blogs:add_tag' post.id %}">
+</form>
+
+
+{% endblock content %}

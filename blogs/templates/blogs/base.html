@@ -1,0 +1,125 @@
+{% load bootstrap4 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{% static 'js/jQurey.mini.js' %}"></script>
+    <title>Blog</title>
+
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    {% block style %}{% endblock style %}
+</head>
+<body>
+    
+    <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border">
+
+        <a href="{% url 'blogs:index' %}" class="navbar-brand">Blog</a>
+        
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a href="{% url 'blogs:blogposts' %}" class="nav-link">
+                        博客帖子
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'blogs:tags' %}" class="nav-link">
+                        帖子标签
+                    </a>
+                </li>
+            </ul>
+
+            <ul class="navbar-nav ml-auto">
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a href="{% url 'users:user' user.id %}">
+                            {% if user.profile_media.image and user.profile_media.activate %}
+                            <img class="profile nav-link" src="{{ user.profile_media.image.url }}" alt="">
+                            {% else %}
+                            <img class="profile nav-link" src="{% static 'images/akarin.jpeg' %}" alt="">
+                            {% endif %}
+                        </a>
+                    </li>
+                    <li class="nav-item"></li>
+                        <a class="nav-link" href="{% url 'users:user' user.id %}">
+                            {{ user.username }}, Ciallo～(∠・ω< )⌒☆
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'users:logout' %}" class="nav-link">
+                            登出
+                        </a>
+                    </li>
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url 'users:register' %}" class="nav-link">
+                            注册
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'users:login' %}" class="nav-link">
+                            登录
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </nav>
+
+    <main role="main" class="container">
+        <div class="page-header pb-2 mb-2 border-bottom">
+            {% block page_header %}{% endblock page_header %}
+        </div>
+        <div>
+            {% block content %}{% endblock content %}
+        </div>
+    </main>
+
+    {% block excontent %}{% endblock excontent %}
+
+</body>
+
+<style>
+* {
+    padding: 0;
+    margin: 0;
+}
+a {
+    transition: 0.25s;
+    color: #1f1e33;
+    text-decoration: none;
+}
+
+a:hover {
+    transition: 0.25s;
+    color: #126ccc;
+    text-decoration: none;
+}
+
+.profile {
+    width: 2.5em;
+    padding: 0 !important;
+    border-radius: 50%;
+}
+
+nav {
+    position: sticky !important;
+    top: 0 !important;
+    z-index: 100 !important;
+    opacity: 95% !important;
+}
+</style>
+
+<script>
+</script>
+</html>

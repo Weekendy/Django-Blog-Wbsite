@@ -1,0 +1,78 @@
+{% extends "blogs/base.html" %}
+{% load static %}
+
+{% block style %}
+<link rel="stylesheet" href="{% static 'css/user.css' %}">
+{% endblock style %}
+
+{% block page_header %}
+
+
+<div class="user_introdution">
+    {% if is_pc %}
+    {% if see_user.profile_media.image and see_user.profile_media.activate %}
+    <a href="{{ see_user.profile_media.image.url }}"><img class="pc_s-user-profile" src="{{ see_user.profile_media.image.url }}" alt=""></a>
+    {% else %}
+    <a href="{% static 'images/akarin.jpeg' %}"><img class="pc_s-user-profile" src="{% static 'images/akarin.jpeg' %}" alt=""></a>
+    {% endif %}
+    <div class="text">
+        <span class="pc_name"><b>{{ see_user.username }}</b></span>
+        <a href="{% url 'users:follow_list' see_user.id %}"><span class="pc_follow">关注&nbsp;{{ user_p.follow_num }}</span></a>
+        <a href="{% url 'users:followed_list' see_user.id %}"><span class="pc_followed">粉丝&nbsp;{{ user_p.followed_num }}</span></a>
+        <br><span class="pc_introduce">{{ user_p.introduce }}</span>
+    </div>
+
+        {% if user.is_authenticated %}
+            {% if not user.id == see_user.id %}
+                {% if user_p.is_followed %}
+                <a href="{% url 'users:defollow' see_user.id %}" class="pc_defollow-btn btn btn-primary">取消关注</a>
+                {% else %}
+                <a href="{% url 'users:follow' see_user.id %}" class="pc_follow-btn btn btn-primary">关注</a>
+                {% endif %}
+            {% else %}
+            <a href="{% url 'users:edit_property' %}" class="pc_edit-btn btn btn-primary">编辑资料</a>
+            {% endif %}
+        {% endif %}
+
+    {% else %}
+    {% if see_user.profile_media.image and see_user.profile_media.activate %}
+    <a href="{{ see_user.profile_media.image.url }}"><img class="s-user-profile" src="{{ see_user.profile_media.image.url }}" alt=""></a>
+    {% else %}
+    <a href="{% static 'images/akarin.jpeg' %}"><img class="s-user-profile" src="{% static 'images/akarin.jpeg' %}" alt=""></a>
+    {% endif %}
+    <div class="text">
+        <span class="name"><b>{{ see_user.username }}</b></span>
+        <br><a href="{% url 'users:follow_list' see_user.id %}"><span class="follow">关注&nbsp;{{ user_p.follow_num }}</span></a>
+        <a href="{% url 'users:followed_list' see_user.id %}"><span class="followed">粉丝&nbsp;{{ user_p.followed_num }}</span></a>
+        <br><span class="introduce">{{ user_p.introduce }}</span>
+    </div>
+
+        {% if user.is_authenticated %}
+            {% if not user.id == see_user.id %}
+                {% if user_p.is_followed %}
+                <a href="{% url 'users:defollow' see_user.id %}" class="defollow-btn btn btn-primary">取消关注</a>
+                {% else %}
+                <a href="{% url 'users:follow' see_user.id %}" class="follow-btn btn btn-primary">关注</a>
+                {% endif %}
+            {% else %}
+            <a href="{% url 'users:edit_property' %}" class="edit-btn btn btn-primary">编辑资料</a>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+</div>
+
+
+{% endblock page_header %}
+
+{% block content %}
+
+
+<div class="user-link">
+    <a href="{% url 'users:mypost_list' see_user.id %}"><div>发布的帖子</div></a>
+    <a href="{% url 'users:likepost_list' see_user.id %}"><div>喜欢的帖子</div></a>
+    {% if user.id == see_user.id %}
+    <a href="{% url 'users:logpost_list' see_user.id %}"><div>浏览记录</div></a>
+    {% endif %}
+</div>
+
+{% endblock content %}

@@ -1,0 +1,93 @@
+{% extends "blogs/base.html" %}
+{% load static %}
+
+{% block style %}
+<style>
+.user {
+    display: block;
+    position: relative;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+.users .user:last-child {
+    border-bottom: 0;
+}
+
+.user-profile {
+    width: 48px;
+    margin-top : -24px;
+    border-radius: 50%;
+    border: 1px solid #f1f3f4;
+}
+
+.text {
+    display: inline-block;
+}
+
+.name {
+    font-size: 16px;
+}
+
+.introduce {
+    font-size: 12px;
+}
+
+.follow-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -24px;
+}
+
+.defollow-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -24px;
+    background-color: rgb(166, 166, 166);
+    border: #f1f3f4;
+}
+
+.defollow-btn:hover {
+    background-color: rgb(100, 100, 100);
+}
+</style>
+{% endblock style %}
+
+{% block page_header %}
+{% endblock page_header %}
+
+{% block content %}
+
+
+<ul class="users">
+    {% for user_p in users_p %}
+    <li class="user">
+        <a class="user-link" href="{% url 'users:user' user_p.user.id %}">
+            {% if user_p.user.profile_media.image and user_p.user.profile_media.activate %}
+            <img class="user-profile" src="{{ see_user.profile_media.image.url }}" alt="">
+            {% else %}
+            <img class="user-profile" src="{% static 'images/akarin.jpeg' %}" alt="">
+            {% endif %}
+            <div class="text">
+                <span class="name"><b>{{ user_p.user.username }}</b></span>
+                <br><span class="introduce">{{ user_p.introduce }}</span>
+            </div>
+            
+        </a>
+        {% if not user.id == user_p.user.id %}
+            {% if user_p.is_followed %}
+            <a href="{% url 'users:defollow' user_p.user.id %}" class="defollow-btn btn btn-primary">取消关注</a>
+            {% else %}
+            <a href="{% url 'users:follow' user_p.user.id %}" class="follow-btn btn btn-primary">关注</a>
+            {% endif %}
+        {% endif %}
+        
+    </li>
+    {% endfor %}
+</ul>
+
+
+{% endblock content %}

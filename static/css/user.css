@@ -1,0 +1,101 @@
+.user_introdution {
+    position: relative;
+}
+
+.s-user-profile {
+    width: 80px;
+    margin-top: -40px;
+    border-radius: 50%;
+    border: 1px solid #f1f3f4;
+}
+
+.pc_s-user-profile {
+    width: 56px;
+    margin-top : -28px;
+    border-radius: 50%;
+    border: 1px solid #f1f3f4;
+}
+
+.text {
+    display: inline-block;
+}
+
+.name {
+    font-size: 16px;
+}
+
+.pc_name {
+    margin-left: 5px;
+    font-size: 20px;
+}
+
+.follow, .followed {
+    font-size: 10px;
+}
+
+.pc_follow, .pc_followed {
+    font-size: 12px;
+}
+
+.introduce {
+    font-size: 12px;
+}
+
+.pc_introduce {
+    font-size: 12px;
+}
+
+.follow-btn, .edit-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -24px;
+}
+
+.defollow-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -24px;
+    background-color: rgb(166, 166, 166);
+}
+
+.defollow-btn:hover {
+    background-color: rgb(100, 100, 100);
+}
+
+.pc_follow-btn, .pc_edit-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -24px;
+}
+
+.pc_defollow-btn {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    margin-top: -24px;
+    background-color: rgb(166, 166, 166);
+}
+
+.pc_defollow-btn:hover {
+    background-color: rgb(100, 100, 100);
+}
+
+.user-link * {
+    height: 48px;
+    background-color: #f1f3f4;
+    letter-spacing: 10px;
+    text-align: center;
+    line-height: 48px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    transition: 0.25s;
+}
+
+.user-link *:hover {
+    background-color: #d9dadb;
+    transition: 0.25s;
+    cursor: pointer;
+}
