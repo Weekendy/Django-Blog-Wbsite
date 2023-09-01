@@ -1,5 +1,5 @@
 ll_env/
-__pycachee__/
+__pycache__/
 *.sqlite3
 media/
 package.json
