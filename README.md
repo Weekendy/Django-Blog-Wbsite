@@ -33,10 +33,10 @@ linux:`source ll_env/bin/activate`
 - 创建超级用户
 `python manage.py createsuperuser`
 
+tip: 关闭虚拟环境:`deactivate`
+
 # bootstrap icons方面
 在[bootstrap icons](http://getbootstrap.net/icons/#install)
-
-tip: 关闭虚拟环境:`deactivate`
 
 ## Licence
 emmm，快上学了没时间整了。
