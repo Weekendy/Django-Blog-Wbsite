@@ -1,0 +1,136 @@
+{% extends "blogs/base.html" %}
+
+{% block style %}
+<style>
+.tags {
+    height: 32px;
+    font-size: 16px;
+    padding-top: 8px;
+    line-height: 32px;
+}
+
+.tag {
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.tag a {
+    height: 16px;
+    background-color: #c8c8d4;
+    border-radius: 5px;
+}
+
+.photo {
+    width: 100%;
+    margin-bottom: 5px;
+}
+.mobile_card-header {
+    text-align: center;
+}
+</style>
+{% endblock style %}
+
+{% block page_header %}
+<h2>"{{ tag }}"下的博客帖子o(*￣▽￣*)o</h2>
+{% endblock page_header %}
+
+{% block content %}
+
+
+{% for post in posts %}
+    {% if post.is_top %}
+    
+    <div class="card mb-3">
+        
+        <h4 class="card-header mobile_card-header" style="background-color: #e9ecef;">
+        <a href="{% url 'blogs:blogpost' post.id %}">
+            <b>[置顶]</b>
+            {{ post.title }}
+        </a><br>
+        <small style="font-size: 16px;">
+            {{ post.date_added|date:'Y年m月d日,H:i' }}
+        </small>
+        </h4>
+        <div class="card-body">
+            {{ post.text|linebreaks }}
+
+            {% if post.media%}
+            <a href="{{ post.media.image.url }}" class="photo-link"><img class="photo" src="{{ post.media.image.url }}" alt="{{ post.media.image }}"></a>
+            {% endif %}
+
+            <div class="tags border-top">
+                {% for tag in post.tagsO %}
+                    {% if tag.main %}
+                    <div class="tag">
+                        <a href="{% url 'blogs:tag' tag.id %}">{{ tag }}</a>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <span>无标签</span>
+                {% endfor %}
+
+                {% for tag in post.tagsO %}
+                    {% if not tag.main %}
+                    <div class="tag">
+                        <a href="{% url 'blogs:tag' tag.id %}">{{ tag }}</a>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+    
+    {% endif %}
+{% endfor %}
+
+{% for post in posts %}
+    {% if not post.is_top %}
+    
+    <div class="card mb-3">
+        
+        <h4 class="card-header {% if not is_pc %}mobile_card-header{% endif %}" style="background-color: #e9ecef;">
+            <a href="{% url 'blogs:blogpost' post.id %}">
+                {{ post.title }}
+            </a><br>
+            <small style="font-size: 16px;">
+                {{ post.date_added|date:'Y年m月d日,H:i' }}
+            </small>
+        </h4>
+        <div class="card-body">
+            {{ post.text|linebreaks }}
+
+            {% if post.media%}
+            <a href="{{ post.media.image.url }}" class="photo-link"><img class="photo" src="{{ post.media.image.url }}" alt="{{ post.media.image }}"></a>
+            {% endif %}
+
+            <div class="tags border-top">
+                {% for tag in post.tagsO %}
+                    {% if tag.main %}
+                    <div class="tag">
+                        <a href="{% url 'blogs:tag' tag.id %}">{{ tag }}</a>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                    <span>无标签</span>
+                {% endfor %}
+
+                {% for tag in post.tagsO %}
+                    {% if not tag.main %}
+                    <div class="tag">
+                        <a href="{% url 'blogs:tag' tag.id %}">{{ tag }}</a>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    {% endif %}
+{% empty %}
+    <p>都是空~！◑﹏◐</p>
+    
+{% endfor %}
+
+
+{% endblock content %}

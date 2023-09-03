@@ -8,7 +8,7 @@ from .forms import *
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from tools import judge_pc_or_mobile, judge_activate
+from tools import judge_pc_or_mobile
 
 TAG_MESSAGEE = '此标签已被屏蔽或删除'
 POST_MESSAGE = '此贴子已被屏蔽或删除'
@@ -34,8 +34,15 @@ def change_imagenum(post_id):
 def blogpost_list(request, posts):
     for post in posts:    
         post.tagsO = post.tags.all()
+        post.media = post.blogpostmedia_set.filter(activate=True).order_by('date_added').first()
+    ua = request.META.get("HTTP_USER_AGENT")
+    is_pc = not judge_pc_or_mobile(ua)
+    
     context = {'posts': posts}
-    return render(request, 'blogs/blogpost_list.html', context)
+    if is_pc:
+        return render(request, 'blogs/blogpost_list_pc.html', context)
+    else:
+        return render(request, 'blogs/blogpost_list_m.html', context)
 
     
 
@@ -86,7 +93,8 @@ def tags(request):
 # 单个标签
 def tag(request, tag_id):
     tag = Tag.objects.get(id=tag_id)
-    judge_activate(tag, TAG_MESSAGEE)
+    if not tag.activate:
+        return HttpResponse(TAG_MESSAGEE)
 
     if request.user.is_authenticated:
         request.user.property.perweb = request.path
@@ -108,14 +116,18 @@ def tag(request, tag_id):
         else:
             post.media = post.blogpostmedia_set.filter(activate=True).order_by('date_added').first()
     
-    context = {'posts' : posts, 'is_pc': is_pc}
-    return render(request, 'blogs/blogposts.html', context)
+    context = {'tag': tag, 'posts': posts, 'is_pc': is_pc}
+    if is_pc:
+        return render(request, 'blogs/tag_pc.html', context)
+    else:
+        return render(request, 'blogs/tag_m.html', context)
 
 # 为帖子增加标签
 @login_required
 def add_tag(request, post_id):
     post = BlogPost.objects.get(id=post_id)
-    judge_activate(post, POST_MESSAGE)
+    if not post.activate:
+        return HttpResponse(POST_MESSAGE)
     
     if post.owner.id != request.user.id:
         raise Http404
@@ -128,7 +140,8 @@ def add_tag(request, post_id):
             added_tag = form.cleaned_data['text']
             # 如果标签未存在，则新建标签且与帖子绑定 若存在，则直接绑定
             tag = Tag.objects.get_or_create(text=added_tag, owner=User.objects.get(id=request.user.id))
-            judge_activate(tag, TAG_MESSAGEE)
+            if not tag.activate:
+                return HttpResponse(TAG_MESSAGEE)
             tag.save()
             post.tags.add(tag)
             post.save()
@@ -142,7 +155,8 @@ def add_tag(request, post_id):
 @login_required
 def unbind_tag(request, post_id, tag_id):
     blogpost = BlogPost.objects.get(id=post_id)
-    judge_activate(blogpost, POST_MESSAGE)
+    if not blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
     if blogpost.owner.id != request.user.id:
         raise Http404
 
@@ -192,13 +206,17 @@ def blogposts(request):
         else:
             post.media = post.blogpostmedia_set.filter(activate=True).order_by('date_added').first()
     
-    context = {'posts' : posts, 'is_pc': is_pc}
-    return render(request, 'blogs/blogposts.html', context)
+    context = {'posts' : posts}
+    if is_pc:
+        return render(request, 'blogs/blogposts_pc.html', context)
+    else:
+        return render(request, 'blogs/blogposts_m.html', context)
 
 # 单个博客帖子
 def blogpost(request, post_id):
     post = BlogPost.objects.get(id=post_id)
-    judge_activate(post, POST_MESSAGE)
+    if not post.activate:
+        return HttpResponse(POST_MESSAGE)
 
     
     is_return = bool(re.search(request.path, request.META['HTTP_REFERER']))
@@ -258,7 +276,8 @@ def blogpost(request, post_id):
 @login_required
 def edit_blogpost(request, post_id):
     post = BlogPost.objects.get(id=post_id)
-    judge_activate(post, POST_MESSAGE)
+    if not post.activate:
+        return HttpResponse(POST_MESSAGE)
     if post.owner.id != request.user.id:
         raise Http404
 
@@ -280,7 +299,8 @@ def edit_blogpost(request, post_id):
 @login_required
 def like_blogpost(request, post_id):
     blogpost = BlogPost.objects.get(id=post_id)
-    judge_activate(blogpost, POST_MESSAGE)
+    if not blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
 
     if len(LikeBlogPost.objects.filter(user=User.objects.get(id=request.user.id), blogpost=blogpost)) < 1:
         like = LikeBlogPost(user=User.objects.get(id=request.user.id), blogpost=blogpost)
@@ -293,7 +313,8 @@ def like_blogpost(request, post_id):
 @login_required
 def delike_blogpost(request, post_id):
     blogpost = BlogPost.objects.get(id=post_id)
-    judge_activate(blogpost, POST_MESSAGE)
+    if not blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
 
     LikeBlogPost.objects.get(user=User.objects.get(id=request.user.id), blogpost=blogpost).delete()
     blogpost.like_num = len(blogpost.like.all())
@@ -304,13 +325,14 @@ def delike_blogpost(request, post_id):
 @login_required
 def del_blogpost(request, post_id):
     blogpost = BlogPost.objects.get(id=post_id)
-    judge_activate(blogpost, POST_MESSAGE)
+    if not blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
     if blogpost.owner.id != request.user.id:
         raise Http404
 
     blogpost.activate = False
     blogpost.save()
-    return redirect('users:mypost_list')
+    return redirect('users:mypost_list', request.user.id)
 
 
 
@@ -318,7 +340,8 @@ def del_blogpost(request, post_id):
 @login_required
 def add_photo(request, post_id):
     post = BlogPost.objects.get(id=post_id)
-    judge_activate(post, POST_MESSAGE)
+    if not post.activate:
+        return HttpResponse(POST_MESSAGE)
     if post.owner.id != request.user.id:
         raise Http404
 
@@ -345,7 +368,8 @@ def add_photo(request, post_id):
 @login_required
 def del_photo(request, media_id):
     media = BlogPostMedia.objects.get(id=media_id)
-    judge_activate(media.blogpost, POST_MESSAGE)
+    if not media.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
     if media.owner.id != request.user.id:
         raise Http404
     
@@ -361,7 +385,8 @@ def del_photo(request, media_id):
 @login_required
 def new_blogpostcomment(request, post_id):
     post = BlogPost.objects.get(id=post_id)
-    judge_activate(post, POST_MESSAGE)
+    if not post.activate:
+        return HttpResponse(POST_MESSAGE)
 
     if request.method != 'POST':
         form = BlogPostCommentForm()
@@ -383,8 +408,10 @@ def new_blogpostcomment(request, post_id):
 @login_required
 def like_blogpostcomment(request, blogpost_comment_id):
     blogpost_comment = BlogPostComment.objects.get(id=blogpost_comment_id)
-    judge_activate(blogpost_comment.blogpost, POST_MESSAGE)
-    judge_activate(blogpost_comment, COMMENT_MESSAGE)
+    if not blogpost_comment.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
+    if not blogpost_comment.activate:
+        return HttpResponse(COMMENT_MESSAGE)
 
     post_id = blogpost_comment.blogpost.id
     blogpost_comment.like_user.add(request.user.id)
@@ -396,8 +423,10 @@ def like_blogpostcomment(request, blogpost_comment_id):
 @login_required
 def delike_blogpostcomment(request, blogpost_comment_id):
     blogpost_comment = BlogPostComment.objects.get(id=blogpost_comment_id)
-    judge_activate(blogpost_comment.blogpost, POST_MESSAGE)
-    judge_activate(blogpost_comment, COMMENT_MESSAGE)
+    if not blogpost_comment.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
+    if not blogpost_comment.activate:
+        return HttpResponse(COMMENT_MESSAGE)
     
     post_id = blogpost_comment.blogpost.id
     blogpost_comment.like_user.remove(request.user.id)
@@ -409,8 +438,10 @@ def delike_blogpostcomment(request, blogpost_comment_id):
 @login_required
 def del_blogpostcomment(request, blogpost_comment_id):
     blogpost_comment = BlogPostComment.objects.get(id=blogpost_comment_id)
-    judge_activate(blogpost_comment.blogpost, POST_MESSAGE)
-    judge_activate(blogpost_comment, COMMENT_MESSAGE)
+    if not blogpost_comment.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
+    if not blogpost_comment.activate:
+        return HttpResponse(COMMENT_MESSAGE)
     if blogpost_comment.owner.id != request.user.id:
         raise Http404
 
@@ -426,8 +457,10 @@ def del_blogpostcomment(request, blogpost_comment_id):
 @login_required
 def new_intercomment(request, extercomment_id):
     extercomment = BlogPostComment.objects.get(id=extercomment_id)
-    judge_activate(extercomment.blogpost, POST_MESSAGE)
-    judge_activate(extercomment, COMMENT_MESSAGE)
+    if not extercomment.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
+    if not extercomment.activate:
+        return HttpResponse(COMMENT_MESSAGE)
 
     if request.method == 'POST' and request.POST['text']:
         form = InterCommentForm(data=request.POST)
@@ -444,8 +477,10 @@ def new_intercomment(request, extercomment_id):
 @login_required
 def new_intercomment2(request, intercomment_id):
     intercomment = InterComment.objects.get(id=intercomment_id)
-    judge_activate(intercomment.extercomment.blogpost, POST_MESSAGE)
-    judge_activate(intercomment, COMMENT_MESSAGE)
+    if not intercomment.exter_comment.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
+    if not intercomment.activate:
+        return HttpResponse(COMMENT_MESSAGE)
 
     if request.method == 'POST' and request.POST['text']:
         form = InterCommentForm(data=request.POST)
@@ -463,8 +498,10 @@ def new_intercomment2(request, intercomment_id):
 @login_required
 def like_intercomment(request, intercomment_id):
     intercomment = InterComment.objects.get(id=intercomment_id)
-    judge_activate(intercomment.extercomment.blogpost, POST_MESSAGE)
-    judge_activate(intercomment, COMMENT_MESSAGE)
+    if not intercomment.exter_comment.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
+    if not intercomment.activate:
+        return HttpResponse(COMMENT_MESSAGE)
 
     post_id = intercomment.exter_comment.blogpost.id
     intercomment.like_user.add(request.user.id)
@@ -476,8 +513,10 @@ def like_intercomment(request, intercomment_id):
 @login_required
 def delike_intercomment(request, intercomment_id):
     intercomment = InterComment.objects.get(id=intercomment_id)
-    judge_activate(intercomment.extercomment.blogpost, POST_MESSAGE)
-    judge_activate(intercomment, COMMENT_MESSAGE)
+    if not intercomment.exter_comment.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
+    if not intercomment.activate:
+        return HttpResponse(COMMENT_MESSAGE)
 
     post_id = intercomment.exter_comment.blogpost.id
     intercomment.like_user.remove(request.user.id)
@@ -489,8 +528,10 @@ def delike_intercomment(request, intercomment_id):
 @login_required
 def del_intercomment(request, intercomment_id):
     intercomment = InterComment.objects.get(id=intercomment_id)
-    judge_activate(intercomment.extercomment.blogpost, POST_MESSAGE)
-    judge_activate(intercomment, COMMENT_MESSAGE)
+    if not intercomment.exter_comment.blogpost.activate:
+        return HttpResponse(POST_MESSAGE)
+    if not intercomment.activate:
+        return HttpResponse(COMMENT_MESSAGE)
     if intercomment.owner.id != request.user.id:
         raise Http404
 

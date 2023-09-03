@@ -44,7 +44,3 @@ def judge_pc_or_mobile(ua):
     return is_mobile
     #ua = request.META.get("HTTP_USER_AGENT")
     #is_pc = not judge_pc_or_mobile(ua)
-
-def judge_activate(object, message):
-    if not object.activate:
-        return HttpResponse(message)

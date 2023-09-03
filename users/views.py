@@ -165,6 +165,8 @@ def mypost_list(request, user_id):
         request.user.property.save()
 
     posts = User.objects.get(id=user_id).blogpost_set.filter(activate=True).order_by('-date_added')
+    for post in posts:
+        post.is_my = True
     return blogpost_list(request, posts)
 
 # 用户喜欢的帖子列表
@@ -194,7 +196,8 @@ def logpost_list(request, user_id):
 
     posts = []
     for log in User.objects.get(id=user_id).property.blogwatchlog_set.order_by('-date_added'):
-        log.blogpost.time = log.date_added
+        log.blogpost.log_time = log.date_added
+        log.blogpost.is_log = True
         posts.append(log.blogpost)
             
     return blogpost_list(request, posts)
