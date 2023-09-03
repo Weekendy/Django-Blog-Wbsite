@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ### Django-Blog-Wbsite
 link[Blog](https://weekendy.pythonanywhere.com/)
 这是一个基于Django的博客网站，搭建在pythonanywhere之上
@@ -39,3 +40,7 @@ tip: 关闭虚拟环境:`deactivate`
 
 ## Licence
 emmm，快上学了没时间整了。
+=======
+# Django-Blog-Wbsite
+这是一个基于Django的博客网站
+>>>>>>> f33e8bc0f50839f7e728a4969c85501260d96ea7
